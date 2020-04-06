@@ -1,0 +1,2 @@
+/usr/bin/ar qc libwilo_dev_core.a  CMakeFiles/wilo_dev_core.dir/logr.cpp.o
+/usr/bin/ranlib libwilo_dev_core.a
