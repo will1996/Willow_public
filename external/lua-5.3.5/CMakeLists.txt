@@ -7,7 +7,6 @@ endif()
     
 add_library(wilo_lua_lib)
 
-
 target_sources(
     wilo_lua_lib
 PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/lapi.c"

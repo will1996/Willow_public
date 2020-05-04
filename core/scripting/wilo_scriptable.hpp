@@ -1,10 +1,12 @@
 #pragma once
+#ifndef wilo_scriptable_h
+#define wilo_scriptable_h
 #include "lua.hpp"
 #include "wilo_dev_core.hpp"
+#include<iostream>
 #include "wilo_subject.hpp"
 #include "wilo_observer.hpp"
 #include "wilo_lua_tools.hpp"
-#define WILO_SCRIPTABLE_BASE_SCRIPT = "/Users/willchambers/Projects/astral/wilo/scripts_engine/scriptable_base.lua"
 //TODO add Cmake defined install settings header, which specifies scriptable base script
 namespace wilo{
     /*base class for scripted objects that are to be accessed both from Lua
@@ -39,67 +41,123 @@ namespace wilo{
     */
 
         template <class T>
-    class Scriptable{
-        //static std::vector<std::pair<std::string,lua_State*>> Instances;
+        class Scriptable {
+            //static std::vector<std::pair<std::string,lua_State*>> Instances;
         public:
-            
-        
-        //build a new scriptable with a name, and fresh Lua environment
-        //this will create the lua table corresponding to THIS scriptable, and 
-        //run the scriptable_lua base script to do the base lua configuration
-        Scriptable(std::string name ): m_L(::luaL_newstate()),m_name(name){
-            ::luaL_openlibs(m_L);
-            runBaseScript();
-            LT_instantiate();
-        }
-        //build a scriptable into an existing Lua state. 
-        //this will only create the lua table corresponding to THIS scriptable,
-        //since the existing scriptable has already run its lua environment
-        Scriptable(Scriptable & other , std::string name ) : m_L(other->m_L),m_name(name){
-            LT_instantiate();
-        }
 
-        virtual ~Scriptable(){}
+
+
+
+            Scriptable(std::string name, T* instance_ptr): m_L(::luaL_newstate()),m_name(name),m_instancePtr(instance_ptr){
+                ::luaL_openlibs(m_L);
+                runBaseScript();
+                LT_instantiate();
+            }
+
+            //build a scriptable into an existing Lua state. 
+            //this will only create the lua table corresponding to THIS scriptable,
+            //since the existing scriptable has already run its lua environment
+            Scriptable(Scriptable& other, std::string name) : m_L(other->m_L), m_name(name) {
+                LT_instantiate();
+            }
+
+            virtual ~Scriptable() {}
         protected:
-        //Grant the oppourtunity to refine the Lua environment that is coarsely
-        //defined by the LT methods. Since this Lua script has access to 
-        //all of the globals henceforth defined in the lua state, we can do 
-        //almost anything we want here, it is intended to restrict access 
-        //and built structure into the otherwise almost completely plastic 
-        //Lua environemtn
-        virtual void initialize() = 0;
-        ::lua_State*  m_L;
-        std::string m_name;
+            //Grant the oppourtunity to refine the Lua environment that is coarsely
+            //defined by the LT methods. Since this Lua script has access to 
+            //all of the globals henceforth defined in the lua state, we can do 
+            //almost anything we want here, it is intended to restrict access 
+            //and built structure into the otherwise almost completely plastic 
+            //Lua environemtn
+            virtual void initialize() = 0;
+            ::lua_State* m_L;
+            std::string m_name;
 
-            template< int(T::*Method)(lua_State*)>
-        //add the member function in the template to this Luatable with the name "name"
-        void LT_appendMember(std::string name){
-            lua_getglobal(m_L,m_name.c_str());//retrieve the class table from the global namespace
+            template< int(T::* Method)(lua_State*)>
+            //add the member function in the template to this Luatable with the name "name"
+            void LT_appendMember(std::string name) {
+                lua_getglobal(m_L, m_name.c_str());//retrieve the class table from the global namespace
 
-            lua_pushstring(m_L,name.c_str());//push a key value pair of the string name
-            lua_pushcfunction(m_L,call<Method>);//and the function call<Method>
+                lua_pushstring(m_L, name.c_str());//push a key value pair of the string name
+                lua_pushcfunction(m_L, call<Method>);//and the function call<Method>
 
-            lua_settable(m_L,-3);//push the pair into the table
+                lua_settable(m_L, -3);//push the pair into the table
 
-            lua_setglobal(m_L,m_name.c_str());//update the global variable with the new entries
-        }
-
-    private: 
+                lua_setglobal(m_L, m_name.c_str());//update the global variable with the new entries
+            }
+            /*create or add to a lua table, with string pairs. Useful for pretty much just sending paths... */
+            bool L_checklua( int res) {
+                if (res != LUA_OK) {
+                    std::string errmsg = lua_tostring(m_L, -1);
+                    std::cout << "[LUA_ERROR] " << errmsg << std::endl;
+                    return false;
+                }
+                return true;
+            }
+            void L_setglobal(std::string name, std::string data) {
+                lua_pushstring(m_L, data.c_str());
+                lua_setglobal(m_L, name.c_str());
+                L_dumpstack();
+            }
+            void L_setglobal(std::string name, int data) {
+                L_setNumericGlobal(name, data);
+            }
+            void L_setglobal(std::string name, float data) {
+                L_setNumericGlobal(name, data);
+            }
+            void L_setglobal(std::string name, double data) {
+                L_setNumericGlobal(name, data);
+            }
+            void L_dumpstack() {
+                std::cout << "stack contents for " << m_name << ":" << std::endl;
+                lua_tools::dumpstack(m_L);
+            }
+            void L_runScript(std::string pathOrCode) {
+                if (isValidLuaFile(pathOrCode)){
+                    L_checklua(luaL_dofile(m_L, pathOrCode.c_str()));
+                }
+                else
+                L_checklua(luaL_dostring(m_L, pathOrCode.c_str()));
+            }
+#ifndef ndebug
+            void L_reinitialize(){
+                runBaseScript();
+            }
+#endif
+        private:
+            T* m_instancePtr; 
+            bool isValidLuaFile(std::string path){
+                return endsWith(path, ".lua") && fexists(path);
+            }
+            template<typename N>
+            void L_setNumericGlobal(std::string name, N num) {
+                lua_pushnumber(m_L, num);
+                lua_setglobal(m_L, name.c_str());
+            }
         //invoke the template method on the 'this' pointer, calling a non-static member function
             template<int(T::*Method)(lua_State* L) >
         static int call(lua_State* L){
-            lua_pushstring(L,"this");
-            lua_gettable(L,-2);
+            std::cout << "calling lua function stack looks like:"<<std::endl;
+            lua_tools::dumpstack(L);
+            lua_pushstring(L,"instancePtr");
+            lua_gettable(L,1);
+            std::cout << "after fetching instance pointer for c++ class call stack looks like: "<<std::endl;
+            lua_tools::dumpstack(L);
             T* this_ptr = static_cast<T*> (lua_touserdata(L,-1));
+            lua_pop(L, 1);//pop the user_data "this" pointer from the top of the stack
+            lua_remove(L, 1);//get rid of the call table, while preserving arguments
+            std::cout << "after popping the call table the stack looks like:"<<std::endl;
+            lua_tools::dumpstack(L);
             return (this_ptr->*Method)(L);
         }
 
         void runBaseScript(){
-            int res = luaL_dofile(m_L,WILO_SCRIPTABLE_BASE_SCRIPT)
+            const std::string scriptpath(WILO_ENGINE_SCRIPTS_PATH);
+            int res = (luaL_dofile(m_L, (scriptpath+"scriptable_base.lua").c_str()));
             if(res != LUA_OK) {
                 #ifndef NDEBUG
                 std::string msg = lua_tostring(m_L,-1);
-                raise std::runtime_error("invalid Lua_base script, failed with:  "+ msg);
+                WILO_CORE_ERROR("invalid Lua_base script, failed with:  "+ msg);
                 #else    
                 raise runtime_error("invalid Lua_base script please validate your install");
                 #endif
@@ -110,24 +168,25 @@ namespace wilo{
       void LT_failOnNameConflict(){
             lua_getglobal(m_L,m_name.c_str());
             
-            if (not lua_isnil(L,-1) ) {
-                throw std::runtime_error("invalid Lua configuration, name "+m_name+" is already in this lua Namespace")
+            if (! lua_isnil(m_L,-1) ) {
+                throw std::runtime_error("invalid Lua configuration, name " + m_name + " is already in this lua Namespace");
             }
         }
 
         //build a global table in Lua with the name m_name, and a reference to this object
         //failing if a global table of the same name already exists
         void LT_instantiate(){
-
-            LT_failOnNameConflict();
+            std::cout << "instantiating: " << m_name << "in the lua global environment!"<<std::endl;
+            //LT_failOnNameConflict();
 
            lua_newtable(m_L);//push a fresh table onto the stack 
 
-           lua_pushstring(m_L,"this");//push a key value pair of the string "this"
-           lua_pushlightuserdata(m_L,this);// and the value a pointer to 'this'
+           lua_pushstring(m_L,"instancePtr");//push a key value pair of the string "this"
+           lua_pushlightuserdata(m_L,m_instancePtr);// and the value a pointer to 'this'
 
            lua_settable(m_L,1);//add the pair to the table
-
+           lua_tools::dumpstack(m_L);
+           std::cout << std::flush;
            lua_setglobal(m_L,m_name.c_str());//name the table, and pop it from the stack
         }
 
@@ -138,4 +197,6 @@ namespace wilo{
 
     };
 
+
 }
+#endif

@@ -5,6 +5,17 @@
 
 
 namespace wilo{
+     Subject::Subject(){}
+     Subject::Subject(wilo_ID_type id ):EngineElement(id){}
+
+     void Subject::initialize()
+     {
+     }
+
+     void Subject::reclaim()
+     {
+     }
+
     //add and remove observers from internal observers map
     //definition moved to header to see if that resolves linker issues
 //        template<typename O,typename M, void(O::*Method)(M& m) >

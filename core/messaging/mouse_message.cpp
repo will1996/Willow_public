@@ -9,21 +9,21 @@ namespace wilo{
         switch(type){
 
             case MessageType::MouseButtonPressed:
-                if( not info.button.has_value()) 
+                if( ! info.button.has_value()) 
                     throw std::runtime_error("must set button value for MouseButtonPressed signals");
                 ss<<"MouseButtonPressed: ";
                 ss<<info.button.value();
                 break;
             
             case MessageType::MouseButtonReleased:
-                if( not info.button.has_value()) 
+                if( ! info.button.has_value()) 
                     throw std::runtime_error("must set button value for MouseButtonReleased signals");
                 ss<<"MouseButtonReleased: ";
                 ss<<info.button.value();
                 break;
 
             case MessageType::MouseMoved:
-                if( not info.xPos.has_value() and info.yPos.has_value()) 
+                if( ! info.xPos.has_value() && info.yPos.has_value()) 
                     throw std::runtime_error("must set xpos and ypos value for MouseMoved signals");
                 ss<<"MouseMoved, New position: ";
                 ss<<"x: "<<info.xPos.value();
@@ -31,7 +31,7 @@ namespace wilo{
                 break;
             
             case MessageType::MouseScrolled:
-                if( not info.xScroll_Offset.has_value() or info.yScroll_Offset.has_value()) 
+                if( ! info.xScroll_Offset.has_value() || info.yScroll_Offset.has_value()) 
                     throw std::runtime_error("must set xScroll_offset or yScroll_offset value for MouseScrolled messages");
                 ss<<"MouseScrolled: ";
                 ss<<"x_offset: "<<info.xScroll_Offset.value();

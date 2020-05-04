@@ -6,10 +6,15 @@ endif()
     
 add_subdirectory(spdlog)
 
-
-
+if(NOT TARGET spdlog)
+    # Stand-alone build
+    find_package(spdlog REQUIRED)
+endif()
 
 add_subdirectory(glm-0.9.9.7)
+
+add_subdirectory(glfw)
+
 
 add_subdirectory(lua-5.3.5)
 

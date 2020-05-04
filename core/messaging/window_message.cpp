@@ -29,7 +29,7 @@ namespace wilo{
                     }
                         m_name = namestream.str();
                 }
-                WindowMessage::Info  WindowMessage::getInfo(){
+                WindowMessage::Info  WindowMessage::getInfo() const {
                     return m_info;
                 }
                 std::string WindowMessage::toString() const {

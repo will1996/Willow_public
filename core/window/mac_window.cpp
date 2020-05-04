@@ -6,12 +6,17 @@ namespace wilo{
         m_info.m_width = info.m_width;
         m_info.m_height = info.m_height;
         m_info.m_title = info.m_title;
+        m_info.API = info.API;
     }
     
     void MacWindow::initialize(){
         bool result = glfwInit();
         WILO_ASSERT(result);
         WILO_CORE_INFO("Creating a window with title {0}, and dimensions ({1},{2})",m_info.m_title,m_info.m_height,m_info.m_width);
+
+
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);//this is required for using Vulkan with this window
+
         m_native_window = glfwCreateWindow(m_info.m_width
                         ,m_info.m_height
                         ,m_info.m_title.c_str()
@@ -34,16 +39,13 @@ namespace wilo{
             info.mod_bundle = KeyModifier(mods);
             if(action==GLFW_PRESS){
                 info.repeat_length = 0;
-                KeyboardMessage* msg = new KeyboardMessage(MessageType::KeyPressed,info);
-                instance -> notifyKeyObservers(msg);
+                instance -> notifyKeyObservers( wilo::KeyboardMessage(MessageType::KeyPressed,info));
             }else if(action ==GLFW_REPEAT){
                 info.repeat_length = 1;
-                KeyboardMessage* msg = new KeyboardMessage(MessageType::KeyHeld,info);
-                instance -> notifyKeyObservers(msg);
+                instance -> notifyKeyObservers( wilo::KeyboardMessage(MessageType::KeyHeld,info));
             }else{//action == GLFW_RELEASE
                 info.repeat_length = -1;
-                KeyboardMessage* msg = new KeyboardMessage(MessageType::KeyReleased,info);
-                instance -> notifyKeyObservers(msg);
+                instance -> notifyKeyObservers( wilo::KeyboardMessage(MessageType::KeyReleased,info));
             } 
         });
 
@@ -53,11 +55,9 @@ namespace wilo{
             info.button = MouseButton(button);  
             info.mod_bundle = KeyModifier(mods);
             if(action == GLFW_PRESS){
-                MouseMessage* msg = new MouseMessage(MessageType::MouseButtonPressed,info);
-                instance -> notifyMouseObservers(msg);
+                instance -> notifyMouseObservers( wilo::MouseMessage(MessageType::MouseButtonPressed,info));
             }else {//action ==GLFW_RELEASE
-                MouseMessage* msg = new MouseMessage(MessageType::MouseButtonReleased,info);
-                instance -> notifyMouseObservers(msg);
+                instance -> notifyMouseObservers( wilo::MouseMessage(MessageType::MouseButtonReleased,info));
             }
         });
         glfwSetCursorPosCallback(m_native_window,[](GLFWwindow* window, double xpos, double ypos){
@@ -65,16 +65,14 @@ namespace wilo{
             MouseMessage::Info info;
             info.xPos = xpos;
             info.yPos = ypos;
-            MouseMessage* msg = new MouseMessage(MessageType::MouseMoved,info);
-            instance ->notifyMouseObservers(msg);
+            instance ->notifyMouseObservers( wilo::MouseMessage(MessageType::MouseMoved,info));
         });
         glfwSetScrollCallback(m_native_window,[](GLFWwindow* window, double xpos, double ypos){
             MacWindow* instance = (MacWindow*)(glfwGetWindowUserPointer(window));
             MouseMessage::Info info;
             info.xScroll_Offset = xpos;
             info.yScroll_Offset = ypos;
-            MouseMessage* msg = new MouseMessage(MessageType::MouseScrolled,info);
-            instance ->notifyMouseObservers(msg);
+            instance ->notifyMouseObservers( wilo::MouseMessage(MessageType::MouseScrolled,info));
         });
     
         glfwSetWindowSizeCallback(m_native_window,[](GLFWwindow* window, int width, int height){
@@ -83,8 +81,7 @@ namespace wilo{
             info.height = height;
             info.width = width;
             info.title = instance->getInfo().m_title;
-            WindowMessage*  msg = new WindowMessage(MessageType::WindowResized,info);
-            instance -> notifyWindowObservers(msg);
+            instance -> notifyWindowObservers( WindowMessage(MessageType::WindowResized,info));
         });
 
         glfwSetWindowFocusCallback(m_native_window,[](GLFWwindow* window, int Focused){
@@ -93,8 +90,7 @@ namespace wilo{
             WindowMessage::Info info;
             info.title = instance->getInfo().m_title;
             if(Focused==GLFW_FOCUSED){
-            WindowMessage* msg = new WindowMessage(MessageType::WindowResized,info);
-            instance -> notifyWindowObservers(msg);
+            instance -> notifyWindowObservers( WindowMessage(MessageType::WindowResized,info));
             }
 
         });
@@ -104,8 +100,7 @@ namespace wilo{
             MacWindow* instance = (MacWindow*)(glfwGetWindowUserPointer(window));
             WindowMessage::Info info;
             info.title = instance->getInfo().m_title;
-            WindowMessage* msg = new WindowMessage(MessageType::WindowClose,info);
-            instance -> notifyWindowObservers(msg);
+            instance -> notifyWindowObservers( WindowMessage(MessageType::WindowClose,info));
 
 
         });
@@ -113,14 +108,14 @@ namespace wilo{
         WILO_CORE_INFO("Window initialized!")
     }
 
-    void MacWindow::notifyKeyObservers(KeyboardMessage* m){
-            this->notify<KeyboardMessage>(m);
+    void MacWindow::notifyKeyObservers(const wilo::KeyboardMessage& msg){
+            this->notify<KeyboardMessage>(msg);
     }
-    void MacWindow::notifyMouseObservers(MouseMessage* m){
-            this->notify<MouseMessage>(m);
+    void MacWindow::notifyMouseObservers(const wilo::MouseMessage& msg){
+            this->notify<MouseMessage>(msg);
     }
-    void MacWindow::notifyWindowObservers(WindowMessage* m){
-            this->notify<WindowMessage>(m);
+    void MacWindow::notifyWindowObservers(const wilo::WindowMessage& msg){
+            this->notify<WindowMessage>(msg);
     }
 
     Window::Info MacWindow::getInfo() const{
@@ -135,6 +130,12 @@ namespace wilo{
 
     bool MacWindow::shouldClose(){
         return glfwWindowShouldClose(m_native_window);
+    }
+
+    void* MacWindow::getNativeWindow()
+    {
+        std::cout << "getting native Window!" << std::endl;
+        return m_native_window;
     }
 
 

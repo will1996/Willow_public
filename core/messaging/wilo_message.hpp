@@ -34,6 +34,8 @@ static std::map<MessageType, std::string> NameOfMessageType{
 class Message
 {
 public:
+    Message(){};
+    virtual ~Message(){};
     virtual MessageType getType() const = 0;
     virtual std::string toString()   const = 0; 
 
@@ -43,9 +45,6 @@ public:
     bool is_handled(){
         return m_handled;
     }
-protected:
-    Message(){};
-    virtual ~Message(){};
 private:
     bool m_handled = false;
  };

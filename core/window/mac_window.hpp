@@ -4,7 +4,7 @@
 #include "mouse_message.hpp"
 #include "window_message.hpp"
 #include "window.hpp"
-#define GLFW_INCLUDE_NONE
+#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 namespace wilo{
@@ -17,11 +17,12 @@ namespace wilo{
          void checkIn()     override;
          void reclaim()     override;
          bool shouldClose() override;
+         void* getNativeWindow() override;
         
         private:
-            void notifyKeyObservers(KeyboardMessage* msg);
-            void notifyMouseObservers(MouseMessage* msg);
-            void notifyWindowObservers(WindowMessage* msg);
+            void notifyKeyObservers(const wilo::KeyboardMessage& msg);
+            void notifyMouseObservers(const wilo::MouseMessage& msg);
+            void notifyWindowObservers(const wilo::WindowMessage& msg);
             Window::Info m_info;
             GLFWwindow* m_native_window = nullptr;
 

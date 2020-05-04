@@ -10,7 +10,7 @@ namespace wilo{
                     double height;
                 };
                 WindowMessage(MessageType type, WindowMessage::Info info);
-                WindowMessage::Info getInfo();
+                WindowMessage::Info getInfo() const ;
                 std::string toString() const override;
                 MessageType getType() const override;
             private:

@@ -1,2 +1,0 @@
-/usr/bin/ar qc libwilorendr.a  CMakeFiles/wilorendr.dir/renderer.cpp.o CMakeFiles/wilorendr.dir/__/vk/vkdevice.cpp.o CMakeFiles/wilorendr.dir/__/vk/vkcore.cpp.o CMakeFiles/wilorendr.dir/__/vk/vkinit.cpp.o CMakeFiles/wilorendr.dir/__/vk/vkutil.cpp.o CMakeFiles/wilorendr.dir/__/dev_core/logr.cpp.o
-/usr/bin/ranlib libwilorendr.a
