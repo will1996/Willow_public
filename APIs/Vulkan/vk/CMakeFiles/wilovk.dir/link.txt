@@ -1,2 +1,0 @@
-/usr/bin/ar qc libwilovk.a  CMakeFiles/wilovk.dir/vkdevice.cpp.o CMakeFiles/wilovk.dir/vkcore.cpp.o CMakeFiles/wilovk.dir/vkinit.cpp.o CMakeFiles/wilovk.dir/vkutil.cpp.o CMakeFiles/wilovk.dir/__/dev_core/logr.cpp.o
-/usr/bin/ranlib libwilovk.a

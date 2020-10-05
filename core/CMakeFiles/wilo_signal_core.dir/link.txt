@@ -1,2 +1,0 @@
-/usr/bin/ar qc libwilo_signal_core.a  CMakeFiles/wilo_signal_core.dir/signal/keyboard_signal.cpp.o CMakeFiles/wilo_signal_core.dir/signal/mouse_signal.cpp.o CMakeFiles/wilo_signal_core.dir/signal/window_signal.cpp.o CMakeFiles/wilo_signal_core.dir/__/dev_core/logr.cpp.o
-/usr/bin/ranlib libwilo_signal_core.a
