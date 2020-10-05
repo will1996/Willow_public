@@ -1,20 +1,18 @@
-cmake_minimum_required( VERSION 3.15...3.16)
+cmake_minimum_required(VERSION 3.16)
+project(Willow)
 
-if (CMAKE_VERSION VERSION_LESS 3.15)
-cmake_policy(VERSION CMAKE_MAJOR_VERSION.CMAKE_MINOR_VERSION)
-endif()
-    
+set(CMAKE_CXX_STANDARD 20)
+
 add_subdirectory(external)
-add_subdirectory(core)
-add_subdirectory(APIs)
-add_subdirectory(rendering)
+add_subdirectory(test)
+add_subdirectory(src)
 
-add_library(wilo INTERFACE)
-target_include_directories(wilo INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}")
-target_sources(wilo INTERFACE wilo.hpp)
+add_executable(CubeExample examples/Cube.cpp)
+target_include_directories(CubeExample PRIVATE include)
+target_link_libraries(CubeExample Willow)
 
-target_link_libraries(wilo INTERFACE wilo_script)
-target_link_libraries(wilo INTERFACE wilo_application)
-target_link_libraries(wilo INTERFACE wilo_messaging_core)
-target_link_libraries(wilo INTERFACE wilo_window)
-target_link_libraries(wilo INTERFACE wilovk)
+
+set(WILO_ENGINE_SCRIPTS_PATH "\"${PROJECT_SOURCE_DIR}/scripts/\"" )
+set(WILO_TESTS_SCRIPTS_PATH "" )
+set(WILO_ENGINE_VERSION "0")
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/willow/root/WiloConfig.h.in "${CMAKE_CURRENT_SOURCE_DIR}/include/willow/root/WiloConfig.h")

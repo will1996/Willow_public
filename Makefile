@@ -126,14 +126,14 @@ list_install_components/fast: list_install_components
 
 # The main all target
 all: cmake_check_build_system
-	cd /Users/willchambers/Projects/astral && $(CMAKE_COMMAND) -E cmake_progress_start /Users/willchambers/Projects/astral/CMakeFiles /Users/willchambers/Projects/astral/wilo/CMakeFiles/progress.marks
-	cd /Users/willchambers/Projects/astral && $(MAKE) -f CMakeFiles/Makefile2 wilo/all
+	cd /Users/willchambers/Projects/astral && $(CMAKE_COMMAND) -E cmake_progress_start /Users/willchambers/Projects/astral/CMakeFiles /Users/willchambers/Projects/astral/wlo/CMakeFiles/progress.marks
+	cd /Users/willchambers/Projects/astral && $(MAKE) -f CMakeFiles/Makefile2 wlo/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/willchambers/Projects/astral/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /Users/willchambers/Projects/astral && $(MAKE) -f CMakeFiles/Makefile2 wilo/clean
+	cd /Users/willchambers/Projects/astral && $(MAKE) -f CMakeFiles/Makefile2 wlo/clean
 .PHONY : clean
 
 # The main clean target
@@ -143,12 +143,12 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /Users/willchambers/Projects/astral && $(MAKE) -f CMakeFiles/Makefile2 wilo/preinstall
+	cd /Users/willchambers/Projects/astral && $(MAKE) -f CMakeFiles/Makefile2 wlo/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /Users/willchambers/Projects/astral && $(MAKE) -f CMakeFiles/Makefile2 wilo/preinstall
+	cd /Users/willchambers/Projects/astral && $(MAKE) -f CMakeFiles/Makefile2 wlo/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
