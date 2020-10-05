@@ -1,13 +1,13 @@
-#ifndef SPDLOG_COMPILED_LIB
-#error Please define SPDLOG_COMPILED_LIB to compile this file.
-#endif
-
 // Slightly modified version of fmt lib's format.cc source file.
 // Copyright (c) 2012 - 2016, Victor Zverovich
 // All rights reserved.
 
+#ifndef SPDLOG_COMPILED_LIB
+#error Please define SPDLOG_COMPILED_LIB to compile this file.
+#endif
+
 #if !defined(SPDLOG_FMT_EXTERNAL)
-#include "spdlog/fmt/bundled/format-inl.h"
+#include <spdlog/fmt/bundled/format-inl.h>
 
 FMT_BEGIN_NAMESPACE
 namespace internal {
@@ -20,7 +20,7 @@ int format_float(char *buf, std::size_t size, const char *format, int precision,
         throw std::runtime_error("fuzz mode - avoid large allocation inside snprintf");
 #endif
     // Suppress the warning about nonliteral format string.
-    auto snprintf_ptr = FMT_SNPRINTF;
+    int (*snprintf_ptr)(char *, size_t, const char *, ...) = FMT_SNPRINTF;
     return precision < 0 ? snprintf_ptr(buf, size, format, value) : snprintf_ptr(buf, size, format, precision, value);
 }
 struct sprintf_specs
@@ -146,7 +146,7 @@ char *sprintf_format(Double value, internal::buffer<char> &buf, sprintf_specs sp
 template FMT_API char *internal::sprintf_format(double, internal::buffer<char> &, sprintf_specs);
 template FMT_API char *internal::sprintf_format(long double, internal::buffer<char> &, sprintf_specs);
 
-template struct FMT_API internal::basic_data<void>;
+template struct FMT_INSTANTIATION_DEF_API internal::basic_data<void>;
 
 // Workaround a bug in MSVC2013 that prevents instantiation of format_float.
 int (*instantiate_format_float)(double, int, internal::float_specs, internal::buffer<char> &) = internal::format_float;
@@ -186,4 +186,4 @@ template FMT_API void internal::buffer<wchar_t>::append(const wchar_t *, const w
 template FMT_API std::wstring internal::vformat<wchar_t>(wstring_view, basic_format_args<wformat_context>);
 FMT_END_NAMESPACE
 
-#endif
+#endif // !SPDLOG_FMT_EXTERNAL

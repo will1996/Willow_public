@@ -1,9 +1,6 @@
-cmake_minimum_required( VERSION 3.15...3.16)
 
-if (CMAKE_VERSION VERSION_LESS 3.15)
-cmake_policy(VERSION CMAKE_MAJOR_VERSION.CMAKE_MINOR_VERSION)
-endif()
-    
+cmake_minimum_required(VERSION 3.16)
+
 add_subdirectory(spdlog)
 
 if(NOT TARGET spdlog)
@@ -13,7 +10,7 @@ endif()
 
 add_subdirectory(glm-0.9.9.7)
 
-add_subdirectory(glfw)
+add_subdirectory(glfw-3.3.2)
 
 
 add_subdirectory(lua-5.3.5)

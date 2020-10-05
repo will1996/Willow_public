@@ -5,10 +5,10 @@ cmake_policy(VERSION CMAKE_MAJOR_VERSION.CMAKE_MINOR_VERSION)
 
 endif()
     
-add_library(wilo_lua_lib)
+add_library(Lua SHARED)
 
 target_sources(
-    wilo_lua_lib
+    Lua
 PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/lapi.c"
 PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/lapi.h"
 PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/lauxlib.c"
@@ -72,4 +72,4 @@ PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/lzio.c"
 PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/lzio.h"
 )
 
-target_include_directories(wilo_lua_lib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
+target_include_directories(Lua PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
