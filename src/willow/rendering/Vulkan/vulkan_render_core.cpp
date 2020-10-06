@@ -168,6 +168,7 @@ namespace wlo{
 			VulkanShader fragmentShader(context.getDevice(), fragmentShaderPath);
 			VulkanGraphicsPipeline pipeline(context.getDevice(), swapchain.getSwapSurfaceExtent(), renderPasses[0], vertexShader, fragmentShader);
 			pipeline.pushDescriptorSetLayout(uniformBufferArray.getDescriptorSetLayout());
+            std::cout<<"got here"<<std::endl;
 			pipelines.push_back(pipeline);
             pipelines[0].reinitialize(context.getDevice(), swapchain.getSwapSurfaceExtent());
 		}

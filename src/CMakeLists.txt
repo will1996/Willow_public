@@ -20,6 +20,7 @@ target_link_libraries(WillowRoot PUBLIC spdlog)
 target_include_directories(WillowRoot PUBLIC ../external/spdlog/include)
 target_sources(WillowRoot
         PUBLIC ../include/willow/root/logr.hpp
+        PUBLIC ../include/willow/root/Root.hpp
         PUBLIC ../include/willow/root/wilo_APICodes.hpp
         PUBLIC ../include/willow/root/wilo_engine_element.hpp
         PUBLIC ../include/willow/root/wilo_object_counter.hpp
@@ -27,6 +28,7 @@ target_sources(WillowRoot
         PUBLIC ../include/willow/root/WiloConfig.h.in
         PUBLIC willow/root/wilo_engine_element.cpp
         PUBLIC willow/root/wilo_object_counter.cpp
+        PUBLIC willow/root/Root.cpp
         PUBLIC willow/root/logr.cpp
         )
 
@@ -51,7 +53,7 @@ target_sources(WillowMessaging
         )
 
 find_package(Vulkan REQUIRED)
-add_library(WillowDevUtils SHARED ../include/willow/dev-utils/Helpers.h)
+add_library(WillowDevUtils ../include/willow/dev-utils/Helpers.h)
 target_link_libraries(WillowDevUtils PUBLIC Vulkan::Vulkan)
 target_link_libraries(WillowDevUtils PUBLIC WillowRoot)
 target_sources(WillowDevUtils
@@ -140,7 +142,7 @@ add_library(Willow
         ../include/willow.hpp
         willow/application.cpp
         willow/wilo_console.cpp
-        )
+        willow/root/Root.cpp ../include/willow/root/Root.hpp)
 target_link_libraries(Willow PUBLIC WillowWindow)
 target_link_libraries(Willow PUBLIC WillowScripting)
 target_link_libraries(Willow PUBLIC WillowRendering)

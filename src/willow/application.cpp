@@ -6,7 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace wlo{
- Application::Application()
+ Application::Application(std::string rootPath):m_rootPath(rootPath)
  {
      wlo::logr::initalize();
 //     m_scriptEnv = wlo::CreateSharedPointer<wlo::lua::Environment>();
@@ -37,6 +37,8 @@ namespace wlo{
      rendererInfo.frameHeight = 800;
      rendererInfo.enableGraphicsDebugging = false;
     m_renderer = wlo::CreateUniquePointer<Renderer>(m_main_window, rendererInfo);
+    m_renderer->setShaderPath(m_rootPath.substr(0,m_rootPath.find_last_of("/"))+="/Willow/shaders/");
+    m_renderer->initialize();
     m_main_window->permit<WindowMessage,Renderer,&Renderer::handleWindowResize>(m_renderer.get());
    WILO_CORE_INFO("application initialized!");
  }

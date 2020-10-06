@@ -24,7 +24,7 @@ namespace wlo{
             Info(std::string name, int version) :appName(name),appVersion(version){}
             };
 
-            Application();
+            Application(std::string rootPath);
             virtual void recieve(const wlo::KeyboardMessage& msg);
             virtual void recieve(const wlo::WindowMessage& msg);
             virtual void initialize(Application::Info inf);
@@ -36,7 +36,8 @@ namespace wlo{
             wlo::SharedPointer<wlo::lua::Environment> m_scriptEnv;
             wlo::UniquePointer<Console> m_main_console;
             wlo::UniquePointer<Renderer> m_renderer;
-            
+
+            std::string m_rootPath;
             size_t m_id = 0;
             bool m_shutting_down = false;
             bool m_windowResized = false;

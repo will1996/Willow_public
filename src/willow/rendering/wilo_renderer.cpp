@@ -7,16 +7,14 @@ namespace wlo{
         coreInfo.enableDebugging = rendererInfo.enableGraphicsDebugging;
         coreInfo.enableProfiling = rendererInfo.enableRendererStatistics;
         coreInfo.maxVertices = 100000;
-
         p_renderCore = wlo::renderAPI::getRenderingCore(window, coreInfo);
         p_renderCore->initialize();
-        std::string scriptPath(WILO_ENGINE_SCRIPTS_PATH);
-        std::string shaderFolder = scriptPath+"../shaders/";
-        p_renderCore->buildPipeline(shaderFolder+"vert.spv", shaderFolder+"frag.spv");
     }
 
     void Renderer::initialize()
     {
+        std::string shaderFolder = m_shaderPath;
+        p_renderCore->buildPipeline(shaderFolder+"vert.spv", shaderFolder+"frag.spv");
     }
 
     void Renderer::beginDrawCall()
@@ -84,6 +82,11 @@ namespace wlo{
 
     void Renderer::setClearColor(glm::vec4 color) {
         p_renderCore->setClearColor(color);
+
+    }
+
+    void Renderer::setShaderPath(std::string shaderPath) {
+        m_shaderPath = shaderPath;
 
     }
 }
