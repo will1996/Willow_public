@@ -1,2 +1,2 @@
 # Willow
-the Willow game engine written in C++ and Lua, with a Vulkan back end handling both physics and rendering
+THIS REPOSITORY IS OUTDATED: Please see: https://github.com/will1996/Willow_cpp for the current state of the Willow Game engine!
